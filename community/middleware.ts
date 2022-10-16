@@ -1,41 +1,51 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import FreetCollection from '../freet/collection';
+import CommunityCollection from '../community/collection';
 
 /**
- * Checks if a freet with freetId is req.params exists
+ * Checks if a name in req.body is already in use
  */
-const isFreetExists = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.params.freetId);
-  const freet = validFormat ? await FreetCollection.findOne(req.params.freetId) : '';
-  if (!freet) {
-    res.status(404).json({
-      error: {
-        freetNotFound: `Freet with freet ID ${req.params.freetId} does not exist.`
-      }
-    });
+ const isNameNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
+  const community = await CommunityCollection.findOneByName(req.body.name);
+
+  if (!community) {
+    next();
     return;
   }
 
-  next();
+  res.status(409).json({
+    error: {
+      name: 'A community with this name already exists.'
+    }
+  });
 };
 
 /**
- * Checks if the content of the freet in req.body is valid, i.e not a stream of empty
- * spaces and not more than 140 characters
+ * Checks if a community exists based on communityId provided in req.params
  */
-const isValidFreetContent = (req: Request, res: Response, next: NextFunction) => {
-  const {content} = req.body as {content: string};
-  if (!content.trim()) {
+ const isCommunityExists = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
+
+    if (community) {
+      next();
+    } else {
+      res.status(404).json({error: 'Community not found.'});
+    }
+  } catch (error) {
+    res.status(404).json({error: 'Community not found.'});
+  }
+};
+
+/**
+ * Checks if the current user is in the community whose communityId is in req.params
+ */
+const isUserInCommunity = async (req: Request, res: Response, next: NextFunction) => {
+  const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
+  const userId = req.session.userId;
+  if (community.members.some((member) => (member._id.toString() === userId))) {
     res.status(400).json({
-      error: 'Freet content must be at least one character long.'
-    });
-    return;
-  }
-
-  if (content.length > 140) {
-    res.status(413).json({
-      error: 'Freet content must be no more than 140 characters.'
+      error: 'Cannot join community you are already in.'
     });
     return;
   }
@@ -44,14 +54,14 @@ const isValidFreetContent = (req: Request, res: Response, next: NextFunction) =>
 };
 
 /**
- * Checks if the current user is the author of the freet whose freetId is in req.params
+ * Checks if the current user is not in the community whose communityId is in req.params
  */
-const isValidFreetModifier = async (req: Request, res: Response, next: NextFunction) => {
-  const freet = await FreetCollection.findOne(req.params.freetId);
-  const userId = freet.authorId._id;
-  if (req.session.userId !== userId.toString()) {
-    res.status(403).json({
-      error: 'Cannot modify other users\' freets.'
+ const isUserNotInCommunity = async (req: Request, res: Response, next: NextFunction) => {
+  const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
+  const userId = req.session.userId;
+  if (!community.members.some((member) => (member._id.toString() === userId))) {
+    res.status(400).json({
+      error: 'Cannot leave community you are not in.'
     });
     return;
   }
@@ -60,7 +70,8 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 };
 
 export {
-  isValidFreetContent,
-  isFreetExists,
-  isValidFreetModifier
+  isNameNotAlreadyInUse,
+  isCommunityExists,
+  isUserInCommunity,
+  isUserNotInCommunity,
 };
