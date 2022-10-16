@@ -99,25 +99,47 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `409` If the community name already exists
 
+#### `GET /api/communities` - Get all the communities
+
+**Returns**
+
+- A success message
+- An array of all communities
+
 #### `PUT /api/communities/join/:communityId?` - Join a community
 
 **Returns**
+
 - A success message
 - An object of the joined community
 
 **Throws**
+
 - `403` if the user is not logged in
 - `400` if user is already in the community
 
 #### `PUT /api/communities/leave/:communityId?` - Leave a community
 
 **Returns**
+
 - A success message
 - An object of the left community
 
 **Throws**
+
 - `403` if the user is not logged in
 - `400` if user isn’t in the community
+
+#### `GET /api/communities/mine` - Get all communities user is part of
+
+**Returns**
+
+- A success message
+- An array of all communities user is a part of
+
+**Throws**
+
+- `403` if the user is not logged in
 
 
 #### `GET /api/freets` - Get all the freets
