@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="/scripts/freet.js"></script>
+  <script src="/scripts/community.js"></script>
   <script src="/scripts/user.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
@@ -71,6 +72,38 @@
         <form id="sign-out">
           <h3>Sign Out</h3>
           <input type="submit" value="Sign out">
+        </form>
+
+        <form id="view-all-communities">
+          <h3>View All Communities</h3>
+          <input type="submit" value="View All Communities">
+        </form>
+
+        <form id="create-community">
+          <h3>Create Community</h3>
+          <div>
+            <label for="name">Name:</label>
+            <textarea id="name" name="name"></textarea>
+          </div>
+          <input type="submit" value="Create Community">
+        </form>
+
+        <form id="join-community">
+          <h3>Join Community</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Join Community">
+        </form>
+
+        <form id="leave-community">
+          <h3>Leave Community</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Leave Community">
         </form>
 
         <form id="view-all-freets">
