@@ -99,7 +99,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `409` If the community name already exists
 
-#### `PUT /api/communites/join/:communityId?` - Join a community
+#### `PUT /api/communities/join/:communityId?` - Join a community
 
 **Returns**
 - A success message
@@ -109,7 +109,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `400` if user is already in the community
 
-#### `PUT /api/communites/leave/:communityId?` - Leave a community
+#### `PUT /api/communities/leave/:communityId?` - Leave a community
 
 **Returns**
 - A success message
@@ -219,6 +219,17 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the freetId is invalid
 - `400` if the user has already upvoted the freet
 
+#### `GET /api/upvote/:freetId?` - Get number of upvotes on existing freet
+
+**Returns**
+
+- A success message
+- An integer of the number of upvotes
+
+**Throws**
+
+- `404` if the freetId is invalid
+
 #### `POST /api/downvote/:freetId?` - Downvote existing freet (and remove potential upvote)
 
 **Returns**
@@ -231,17 +242,6 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `404` if the freetId is invalid
 - `400` if the user has already downvoted the freet
-
-#### `GET /api/upvote/:freetId?` - Get number of upvotes on existing freet
-
-**Returns**
-
-- A success message
-- An integer of the number of upvotes
-
-**Throws**
-
-- `404` if the freetId is invalid
 
 #### `GET /api/downvote/:freetId?` - Get number of downvotes on existing freet
 
