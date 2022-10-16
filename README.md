@@ -116,6 +116,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+- `404` if `communityId` is not a valid community
 - `400` if user is already in the community
 
 #### `PUT /api/communities/leave/:communityId?` - Leave a community
@@ -128,6 +129,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+- `404` if `communityId` is not a valid community
 - `400` if user isn’t in the community
 
 #### `GET /api/communities/mine` - Get all communities user is part of
