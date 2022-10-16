@@ -68,11 +68,13 @@ class CommunityCollection {
   // /**
   //  * Get all the communities of a given username
   //  * 
-  //  * @param username - The username to find communities for
+  //  * @param userId - The id of the user to find communities for
   //  * @return {Promise<HydratedDocument<Community>[]>} - An array of all of the communities of the user
   //  */
-  // static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Community>>> {
-  //   const user = await UserCollection.findOneByUsername(username);
+  // static async findAllByUserId(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<Community>>> {
+  //   const user = await UserCollection.findOneByUserId(userId);
+  //   return CommunityModel.find({})
+  //   return await user.populate('communities').communities;
   //   return user.communities.map((communityId) => CommunityModel.findOne({_id: communityId}));
   // }
 
