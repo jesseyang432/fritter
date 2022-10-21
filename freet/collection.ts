@@ -19,27 +19,49 @@ class FreetCollection {
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
    * @param {string} community - Name of community freet will be posted in (empty string if none)
+   * @param {string} parentId - The id of the potential parent freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const community = await CommunityCollection.findOneByName(communityName);
     let freet;
     if (community) {
-      freet = new FreetModel({
-        authorId,
-        dateCreated: date,
-        content,
-        dateModified: date,
-        community: community._id
-      });
+      if (parentId) {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          community: community._id,
+          parent: parentId
+        });
+      } else {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          community: community._id,
+        });
+      }
     } else {
-      freet = new FreetModel({
-        authorId,
-        dateCreated: date,
-        content,
-        dateModified: date
-      });
+      if (parentId) {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date,
+          parent: parentId
+        });
+      } else {
+        freet = new FreetModel({
+          authorId,
+          dateCreated: date,
+          content,
+          dateModified: date
+        });
+      }
     }
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId community');
@@ -103,6 +125,10 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
+    const freetReplies = await FreetModel.find({parent: freetId});
+    for (const reply of freetReplies) {
+      await FreetCollection.deleteOne(reply._id);
+    }
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
   }

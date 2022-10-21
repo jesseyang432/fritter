@@ -98,7 +98,7 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community);
+    const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',
