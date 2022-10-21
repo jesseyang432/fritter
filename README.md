@@ -161,7 +161,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if `author` is not given
 - `404` if `author` is not a recognized username of any user
 
-#### `GET /api/freets?community=NAME` - Get freets by community
+#### `GET /api/freets/community/:community` - Get freets by community
 
 **Returns**
 

@@ -17,6 +17,12 @@ function viewFreetsByAuthor(fields) {
     .catch(showResponse);
 }
 
+function viewFreetsByCommunity(fields) {
+  fetch(`/api/freets/community/${fields.community}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function createFreet(fields) {
   fetch('/api/freets', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)

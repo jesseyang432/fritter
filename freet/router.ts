@@ -25,18 +25,6 @@ const router = express.Router();
  * @throws {404} - If no user has given authorId
  *
  */
-/**
- * Get freets by community.
- *
- * @name GET /api/freets?community=name
- *
- * @return {FreetResponse[]} - An array of freets created by user with id, authorId
- * @throws {403} - If user is not logged in
- * @throws {400} - If community is not given in
- * @throws {404} - if community is not a recognized name of any community
- * @throws {403} - if user is not a member of the community
- *
- */
 router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
@@ -48,7 +36,7 @@ router.get(
 
     if (req.query.community !== undefined) {
       next();
-      next();
+      return;
     }
 
     const allFreets = await FreetCollection.findAll();
@@ -63,11 +51,28 @@ router.get(
     const response = authorFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   },
+);
+
+/**
+ * Get freets by community.
+ *
+ * @name GET /api/freets/community/:community
+ *
+ * @param {string} community - the name of the community
+ * @return {FreetResponse[]} - An array of freets created by user with id, authorId
+ * @throws {403} - If user is not logged in
+ * @throws {400} - If community is not given in
+ * @throws {404} - if community is not a recognized name of any community
+ * @throws {403} - if user is not a member of the community
+ *
+ */
+router.get(
+  '/community/:community',
   [
     // TODO: Community validators
   ],
   async (req: Request, res: Response) => {
-    const communityFreets = await FreetCollection.findAllByCommunityName(req.query.community as string);
+    const communityFreets = await FreetCollection.findAllByCommunityName(req.params.community);
     const response = communityFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   }
