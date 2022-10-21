@@ -243,6 +243,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the freetId is invalid
 - `400` if the user has already upvoted the freet
 
+#### `DELETE /api/upvotes/:freetId?` - Remove existing upvote on a freet
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId is invalid
+- `400` if the user has not upvoted the freet
+
 #### `GET /api/upvotes/:freetId?` - Get upvotes on existing freet
 
 **Returns**
@@ -266,6 +278,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `404` if the freetId is invalid
 - `400` if the user has already downvoted the freet
+
+#### `DELETE /api/downvotes/:freetId?` - Remove existing downvote on a freet
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId is invalid
+- `400` if the user has not downvoted the freet
 
 #### `GET /api/downvotes/:freetId?` - Get downvotes on existing freet
 
