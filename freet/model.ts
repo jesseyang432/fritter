@@ -64,6 +64,7 @@ const FreetSchema = new Schema<Freet>({
   // The parent the freet might be replying to
   parent: {
     type: Schema.Types.ObjectId,
+    required: false,
     ref: 'Freet'
   }
 });
