@@ -54,11 +54,5 @@ const CommunitySchema = new Schema<Community>({
   }
 });
 
-CommunitySchema.virtual('freets', {
-  ref: 'Freet',
-  localField: '_id',
-  foreignField: 'community'
-});
-
 const CommunityModel = model<Community>('Community', CommunitySchema);
 export default CommunityModel;

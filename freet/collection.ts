@@ -76,6 +76,11 @@ class FreetCollection {
     return FreetModel.find({authorId: author._id}).populate('authorId community');
   }
 
+  static async findAllByCommunityName(communityName: string): Promise<Array<HydratedDocument<Freet>>> {
+    const community = await CommunityCollection.findOneByName(communityName);
+    return FreetModel.find({community: community._id}).populate('authorId community');
+  }
+
   /**
    * Update a freet with the new content
    *
