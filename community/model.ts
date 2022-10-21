@@ -1,6 +1,7 @@
 import type {Types, PopulatedDoc, Document} from 'mongoose';
 import {Schema, model} from 'mongoose';
 import type {User} from '../user/model';
+import type {Freet} from '../freet/model';
 
 /**
  * This file defines the properties stored in a Community
@@ -51,6 +52,12 @@ const CommunitySchema = new Schema<Community>({
     type: String,
     required: true
   }
+});
+
+CommunitySchema.virtual('freets', {
+  ref: 'Freet',
+  localField: '_id',
+  foreignField: 'community'
 });
 
 const CommunityModel = model<Community>('Community', CommunitySchema);
