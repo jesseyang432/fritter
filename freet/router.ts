@@ -82,10 +82,13 @@ router.get(
  *
  * @param {string} content - The content of the freet
  * @param {string} community - The name of the community to post in
+ * @param {string} parentId - The parent freet that this one might reply to
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {404} - If the community is not a recognized name of any community
  * @throws {403} - If the user is not a member of the community
+ * @throws {404} - If parentId is not a valid Freet id
+ * @throws {409} - If parentId is not a Freet within community `community`
  * @throws {400} - If the freet content is empty or a stream of empty spaces
  * @throws {413} - If the freet content is more than 140 characters long
  */
@@ -94,6 +97,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     communityValidator.isUserPostingWronglyCommunity,
+    freetValidator.isRespondingToValidParent,
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
