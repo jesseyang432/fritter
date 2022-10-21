@@ -230,7 +230,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if the new freet content is empty or a stream of empty spaces
 - `413` if the new freet content is more than 140 characters long
 
-#### `POST /api/upvote/:freetId?` - Upvote existing freet (and remove potential downvote)
+#### `POST /api/upvotes/:freetId?` - Upvote existing freet (and remove potential downvote)
 
 **Returns**
 
@@ -243,18 +243,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the freetId is invalid
 - `400` if the user has already upvoted the freet
 
-#### `GET /api/upvote/:freetId?` - Get number of upvotes on existing freet
+#### `GET /api/upvotes/:freetId?` - Get upvotes on existing freet
 
 **Returns**
 
 - A success message
-- An integer of the number of upvotes
+- An array of upvotes on the freet
 
 **Throws**
 
 - `404` if the freetId is invalid
 
-#### `POST /api/downvote/:freetId?` - Downvote existing freet (and remove potential upvote)
+#### `POST /api/downvotes/:freetId?` - Downvote existing freet (and remove potential upvote)
 
 **Returns**
 
@@ -267,12 +267,12 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the freetId is invalid
 - `400` if the user has already downvoted the freet
 
-#### `GET /api/downvote/:freetId?` - Get number of downvotes on existing freet
+#### `GET /api/downvotes/:freetId?` - Get downvotes on existing freet
 
 **Returns**
 
 - A success message
-- An integer of the number of downvotes
+- An array of downvotes on the freet
 
 **Throws**
 
