@@ -51,7 +51,7 @@ class CommunityCollection {
    * @param {string} name - The name of the community to find
    * @return {Promise<HydratedDocument<Community>> | Promise<null>} - The community with the given name, if any
    */
-   static async findOneByName(name: string): Promise<HydratedDocument<Community>> {
+  static async findOneByName(name: string): Promise<HydratedDocument<Community>> {
     return CommunityModel.findOne({name: new RegExp(`^${name.trim()}$`, 'i')});
   }
 
