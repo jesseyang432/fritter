@@ -24,13 +24,23 @@ class FreetCollection {
   static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const community = await CommunityCollection.findOneByName(communityName);
-    const freet = new FreetModel({
-      authorId,
-      dateCreated: date,
-      content,
-      dateModified: date,
-      community: community._id
-    });
+    let freet;
+    if (community) {
+      freet = new FreetModel({
+        authorId,
+        dateCreated: date,
+        content,
+        dateModified: date,
+        community: community._id
+      });
+    } else {
+      freet = new FreetModel({
+        authorId,
+        dateCreated: date,
+        content,
+        dateModified: date
+      });
+    }
     await freet.save(); // Saves freet to MongoDB
     return freet.populate('authorId');
   }
