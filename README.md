@@ -181,7 +181,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `content` _{string}_ - The content of the freet
 - `community` _{string}_ - Optional name of community to post in
 - `parent` _{string}_ - Optional id of freet this one is replying to
-- `safety` _{string}_ - Optional safety level (SFW, NSFW, or anything else is nullified)
+- `safety` _{string}_ - The safety level of the freet (SFW, NSFW, or anything else is nullified)
 
 **Returns**
 
@@ -289,3 +289,14 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `404` if `community` is not a valid community name
 - `404` if `username` is not a valid username
+
+#### `GET /api/safety/:freetId?` - Get safety of an existing freet
+
+**Returns**
+
+- A success message
+- A safety object
+
+**Throws**
+
+- `404` if the freetId is invalid
