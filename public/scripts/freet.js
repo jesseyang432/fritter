@@ -18,7 +18,7 @@ function viewFreetsByAuthor(fields) {
 }
 
 function viewFreetsByCommunity(fields) {
-  fetch(`/api/freets/community/${fields.community}`)
+  fetch(`/api/freets/community/${fields.communityName}`)
     .then(showResponse)
     .catch(showResponse);
 }

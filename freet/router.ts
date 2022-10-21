@@ -3,6 +3,7 @@ import express from 'express';
 import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
+import * as communityValidator from '../community/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -34,11 +35,6 @@ router.get(
       return;
     }
 
-    if (req.query.community !== undefined) {
-      next();
-      return;
-    }
-
     const allFreets = await FreetCollection.findAll();
     const response = allFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
@@ -56,23 +52,24 @@ router.get(
 /**
  * Get freets by community.
  *
- * @name GET /api/freets/community/:community
+ * @name GET /api/freets/community/:communityName
  *
  * @param {string} community - the name of the community
  * @return {FreetResponse[]} - An array of freets created by user with id, authorId
  * @throws {403} - If user is not logged in
- * @throws {400} - If community is not given in
  * @throws {404} - if community is not a recognized name of any community
  * @throws {403} - if user is not a member of the community
  *
  */
 router.get(
-  '/community/:community',
+  '/community/:communityName',
   [
-    // TODO: Community validators
+    userValidator.isUserLoggedIn,
+    communityValidator.isCommunityExistsByName,
+    communityValidator.isUserNotInCommunityByName
   ],
   async (req: Request, res: Response) => {
-    const communityFreets = await FreetCollection.findAllByCommunityName(req.params.community);
+    const communityFreets = await FreetCollection.findAllByCommunityName(req.params.communityName);
     const response = communityFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   }
@@ -87,6 +84,8 @@ router.get(
  * @param {string} community - The name of the community to post in
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
+ * @throws {404} - If the community is not a recognized name of any community
+ * @throws {403} - If the user is not a member of the community
  * @throws {400} - If the freet content is empty or a stream of empty spaces
  * @throws {413} - If the freet content is more than 140 characters long
  */
@@ -94,6 +93,7 @@ router.post(
   '/',
   [
     userValidator.isUserLoggedIn,
+    communityValidator.isUserPostingWronglyCommunity,
     freetValidator.isValidFreetContent
   ],
   async (req: Request, res: Response) => {
