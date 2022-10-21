@@ -2,7 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
-import CommunityCollection from 'community/collection';
+import CommunityCollection from '../community/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -42,7 +42,7 @@ class FreetCollection {
       });
     }
     await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    return freet.populate('authorId community');
   }
 
   /**
@@ -52,7 +52,7 @@ class FreetCollection {
    * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
    */
   static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId');
+    return FreetModel.findOne({_id: freetId}).populate('authorId community');
   }
 
   /**
@@ -62,7 +62,7 @@ class FreetCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
     // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId');
+    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId community');
   }
 
   /**
@@ -73,7 +73,7 @@ class FreetCollection {
    */
   static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).populate('authorId');
+    return FreetModel.find({authorId: author._id}).populate('authorId community');
   }
 
   /**
@@ -88,7 +88,7 @@ class FreetCollection {
     freet.content = content;
     freet.dateModified = new Date();
     await freet.save();
-    return freet.populate('authorId');
+    return freet.populate('authorId community');
   }
 
   /**

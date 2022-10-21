@@ -41,7 +41,7 @@ const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse =
     author: username,
     dateCreated: formatDate(freet.dateCreated),
     dateModified: formatDate(freet.dateModified),
-    community: freetCopy.community.name ?? null
+    community: freetCopy.community?.name
   };
 };
 
