@@ -16,6 +16,7 @@ export type Freet = {
   content: string;
   dateModified: Date;
   community: Types.ObjectId;
+  parent: Types.ObjectId;
 };
 
 export type PopulatedFreet = {
@@ -25,6 +26,7 @@ export type PopulatedFreet = {
   content: string;
   dateModified: Date;
   community: Community;
+  parent: Freet;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -58,6 +60,11 @@ const FreetSchema = new Schema<Freet>({
     type: Schema.Types.ObjectId,
     required: false,
     ref: 'Community'
+  },
+  // The parent the freet might be replying to
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'Freet'
   }
 });
 

@@ -10,6 +10,7 @@ type FreetResponse = {
   content: string;
   dateModified: string;
   community: string;
+  parent: string;
 };
 
 /**
@@ -41,7 +42,8 @@ const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse =
     author: username,
     dateCreated: formatDate(freet.dateCreated),
     dateModified: formatDate(freet.dateModified),
-    community: freetCopy.community?.name
+    community: freetCopy.community?.name,
+    parent: freetCopy.parent.toString()
   };
 };
 
