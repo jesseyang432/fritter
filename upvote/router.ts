@@ -1,9 +1,8 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
-import FreetCollection from './collection';
+import UpvoteCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
-import * as communityValidator from '../community/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -17,7 +16,7 @@ const router = express.Router();
  * @param {string} freetId - The ID of the freet to upvote
  * @return {UpvoteResponse} - The created freet
  * @throws {403} - If the user is not logged in
- * @throws {400} - If the freetId is invalid
+ * @throws {404} - If the freetId is invalid
  * @throws {400} - If the user has already upvoted the freet
  */
 router.post(
@@ -28,13 +27,41 @@ router.post(
     // TODO: Middleware for if already upvoted
   ],
   async (req: Request, res: Response) => {
-    // const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    // const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId);
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const upvote = await UpvoteCollection.addOne(userId, req.params.freetId);
 
-    // res.status(201).json({
-    //   message: 'Your freet was created successfully.',
-    //   freet: util.constructFreetResponse(freet)
-    // });
+    res.status(201).json({
+      message: 'Your upvote was created successfully.',
+      upvote: util.constructUpvoteResponse(upvote)
+    });
+  }
+);
+
+/**
+ * Remove an upvote.
+ *
+ * @name DELETE /api/upvotes/:freetId
+ *
+ * @param {string} freetId - The ID of the freet to upvote
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If the freetId is invalid
+ * @throws {400} - If the user has not upvoted the freet
+ */
+ router.delete(
+  '/',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists,
+    // TODO: Middleware for if not upvoted
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    await UpvoteCollection.deleteOne(userId, req.params.freetId);
+
+    res.status(201).json({
+      message: 'Your upvote was removed successfully.'
+    });
   }
 );
 
@@ -44,7 +71,7 @@ router.post(
  * @name GET /api/upvotes/:freetId
  *
  * @param {string} freetId - The ID of the freet to upvote
- * @return {UpvoteResponse} - The created freet
+ * @return {UpvoteResponse[]} - Array of upvotes on a freet
  * @throws {404} - If the freetId is invalid
  */
  router.get(
@@ -53,13 +80,9 @@ router.post(
     freetValidator.isFreetExists,
   ],
   async (req: Request, res: Response) => {
-    // const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    // const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId);
-
-    // res.status(201).json({
-    //   message: 'Your freet was created successfully.',
-    //   freet: util.constructFreetResponse(freet)
-    // });
+    const upvotes = await UpvoteCollection.findAllByFreet(req.params.freetId);
+    const response = upvotes.map(util.constructUpvoteResponse);
+    res.status(200).json(response);
   }
 );
 
