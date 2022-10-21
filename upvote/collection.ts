@@ -1,146 +1,53 @@
 import type {HydratedDocument, Types} from 'mongoose';
-import type {Freet} from './model';
-import FreetModel from './model';
+import type {Upvote} from './model';
+import UpvoteModel from './model';
 import UserCollection from '../user/collection';
 import CommunityCollection from '../community/collection';
 
 /**
- * This files contains a class that has the functionality to explore freets
- * stored in MongoDB, including adding, finding, updating, and deleting freets.
+ * This files contains a class that has the functionality to explore upvote
+ * stored in MongoDB.
  * Feel free to add additional operations in this file.
- *
- * Note: HydratedDocument<Freet> is the output of the FreetModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
  */
-class FreetCollection {
+class UpvoteCollection {
   /**
-   * Add a freet to the collection
+   * Add an upvote to the collection
    *
-   * @param {string} authorId - The id of the author of the freet
-   * @param {string} content - The id of the content of the freet
-   * @param {string} community - Name of community freet will be posted in (empty string if none)
-   * @param {string} parentId - The id of the potential parent freet
-   * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
+   * @param {string} upovterId - The id of the user upvoting
+   * @param {string} freetId - The id of the freet
+   * @return {Promise<HydratedDocument<Upvote>>} - The newly created upvote
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    const date = new Date();
-    const community = await CommunityCollection.findOneByName(communityName);
-    let freet;
-    if (community) {
-      if (parentId) {
-        freet = new FreetModel({
-          authorId,
-          dateCreated: date,
-          content,
-          dateModified: date,
-          community: community._id,
-          parent: parentId
-        });
-      } else {
-        freet = new FreetModel({
-          authorId,
-          dateCreated: date,
-          content,
-          dateModified: date,
-          community: community._id,
-        });
-      }
-    } else {
-      if (parentId) {
-        freet = new FreetModel({
-          authorId,
-          dateCreated: date,
-          content,
-          dateModified: date,
-          parent: parentId
-        });
-      } else {
-        freet = new FreetModel({
-          authorId,
-          dateCreated: date,
-          content,
-          dateModified: date
-        });
-      }
-    }
-    await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId community');
+  static async addOne(upvoterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Upvote>> {
+    const upvote = new UpvoteModel({
+      upvoter: upvoterId,
+      freet: freetId
+    });
+ 
+    await upvote.save(); // Saves upvote to MongoDB
+    return upvote.populate('upvoter');
   }
 
   /**
-   * Find a freet by freetId
+   * Get all the upvotes of a given freet
    *
-   * @param {string} freetId - The id of the freet to find
-   * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+   * @param {string} freetId - The id of the freet
+   * @return {Promise<HydratedDocument<Upvote>[]>} - An array of all of the upvotes
    */
-  static async findOne(freetId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
-    return FreetModel.findOne({_id: freetId}).populate('authorId community');
+  static async findAllByFreet(freetId: Types.ObjectId | string): Promise<Array<HydratedDocument<Upvote>>> {
+    return UpvoteModel.find({freet: freetId}).populate('upvoter');
   }
 
   /**
-   * Get all the freets in the database
+   * Delete an upvote with freet `freetId` and upvoter `upvoterId`.
    *
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
-   */
-  static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
-    // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({dateModified: -1}).populate('authorId community');
-  }
-
-  /**
-   * Get all the freets in by given author
-   *
-   * @param {string} username - The username of author of the freets
-   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
-   */
-  static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
-    const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({authorId: author._id}).populate('authorId community');
-  }
-
-  static async findAllByCommunityName(communityName: string): Promise<Array<HydratedDocument<Freet>>> {
-    const community = await CommunityCollection.findOneByName(communityName);
-    return FreetModel.find({community: community._id}).populate('authorId community');
-  }
-
-  /**
-   * Update a freet with the new content
-   *
-   * @param {string} freetId - The id of the freet to be updated
-   * @param {string} content - The new content of the freet
-   * @return {Promise<HydratedDocument<Freet>>} - The newly updated freet
-   */
-  static async updateOne(freetId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
-    const freet = await FreetModel.findOne({_id: freetId});
-    freet.content = content;
-    freet.dateModified = new Date();
-    await freet.save();
-    return freet.populate('authorId community');
-  }
-
-  /**
-   * Delete a freet with given freetId.
-   *
+   * @param {string} upvoterId - The id of the user who upvoted
    * @param {string} freetId - The freetId of freet to delete
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
-  static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
-    const freetReplies = await FreetModel.find({parent: freetId});
-    for (const reply of freetReplies) {
-      await FreetCollection.deleteOne(reply._id);
-    }
-    const freet = await FreetModel.deleteOne({_id: freetId});
-    return freet !== null;
-  }
-
-  /**
-   * Delete all the freets by the given author
-   *
-   * @param {string} authorId - The id of author of freets
-   */
-  static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
-    await FreetModel.deleteMany({authorId});
+  static async deleteOne(upvoterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<boolean> {
+    const upvote = await UpvoteModel.deleteOne({upvoter: upvoterId, freet: freetId});
+    return upvote !== null;
   }
 }
 
-export default FreetCollection;
+export default UpvoteCollection;
