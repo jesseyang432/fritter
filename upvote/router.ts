@@ -20,7 +20,7 @@ const router = express.Router();
  * @throws {400} - If the user has already upvoted the freet
  */
 router.post(
-  '/',
+  '/:freetId?',
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
@@ -49,7 +49,7 @@ router.post(
  * @throws {400} - If the user has not upvoted the freet
  */
  router.delete(
-  '/',
+  '/:freetId?',
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
@@ -75,7 +75,7 @@ router.post(
  * @throws {404} - If the freetId is invalid
  */
  router.get(
-  '/',
+  '/:freetId?',
   [
     freetValidator.isFreetExists,
   ],

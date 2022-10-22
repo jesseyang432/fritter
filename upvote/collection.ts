@@ -1,8 +1,6 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {Upvote} from './model';
 import UpvoteModel from './model';
-import UserCollection from '../user/collection';
-import CommunityCollection from '../community/collection';
 
 /**
  * This files contains a class that has the functionality to explore upvote

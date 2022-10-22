@@ -43,7 +43,10 @@ const formsAndHandlers = {
   'view-freets-by-community': viewFreetsByCommunity,
   'create-freet': createFreet,
   'edit-freet': editFreet,
-  'delete-freet': deleteFreet
+  'delete-freet': deleteFreet,
+  'add-upvote': addUpvote,
+  'remove-upvote': removeUpvote,
+  'view-upvotes-by-freet': viewUpvotesByFreet
 };
 
 // Attach handlers to forms
