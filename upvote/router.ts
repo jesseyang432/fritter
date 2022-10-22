@@ -3,6 +3,7 @@ import express from 'express';
 import UpvoteCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
+import * as upvoteValidator from '../upvote/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -24,7 +25,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    // TODO: Middleware for if already upvoted
+    upvoteValidator.isUpvotedByUser
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -53,7 +54,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    // TODO: Middleware for if not upvoted
+    upvoteValidator.isNotUpvotedByUser,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

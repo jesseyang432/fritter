@@ -36,6 +36,17 @@ class UpvoteCollection {
   }
 
   /**
+   * Gets an upvote from the upvoter and freet
+   * 
+   * @param userId - ID of the upvoter
+   * @param freetId - ID of the freet
+   * @returns {Promise<HydratedDocument<Upvote>>} - Upvote object
+   */
+  static async findOneByUserAndFreet(userId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Upvote>> {
+    return UpvoteModel.findOne({upvoter: userId, freet: freetId});
+  }
+
+  /**
    * Delete an upvote with freet `freetId` and upvoter `upvoterId`.
    *
    * @param {string} upvoterId - The id of the user who upvoted
