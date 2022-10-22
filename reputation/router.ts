@@ -1,8 +1,6 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
-import * as userValidator from '../user/middleware';
-import * as freetValidator from '../freet/middleware';
-import * as upvoteValidator from '../upvote/middleware';
+import * as reputationValidator from '../reputation/middleware';
 import * as util from './util';
 import ReputationCollection from './collection';
 
@@ -20,7 +18,7 @@ const router = express.Router();
  router.get(
   '/',
   [
-    // TODO: Add Middleware
+    reputationValidator.isInvalidQuery
   ],
   async (req: Request, res: Response) => {
     const reputation = await ReputationCollection.findOneByNames(req.query.community as string, req.query.username as string);

@@ -1,38 +1,28 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
-import UpvoteCollection from '../upvote/collection';
+import UserCollection from '../user/collection';
+import CommunityCollection from '../community/collection';
 
 /**
- * Checks if a freet with id freetId in req.params has already been upvoted by the user
+ * Checks if a req.query.community is not valid community name or req.query.username is not valid username
  */
-const isUpvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
-  const upvote = await UpvoteCollection.findOneByUserAndFreet(req.session.userId, req.params.freetId);
-  if (upvote) {
-    res.status(400).json({
-      error: 'You have already upvoted this Freet.'
+const isInvalidQuery = async (req: Request, res: Response, next: NextFunction) => {
+  const community = await CommunityCollection.findOneByName(req.query.community as string);
+  const user = await UserCollection.findOneByUsername(req.query.username as string);
+  if (!community) {
+    res.status(404).json({
+      error: 'Community not found.'
+    });
+    return;
+  } else if (!user) {
+    res.status(404).json({
+      error: 'User not found.'
     });
     return;
   }
 
   next();
 }
-
-/**
- * Checks if a freet with id freetId in req.params has not been upvoted by the user
- */
- const isNotUpvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
-  const upvote = await UpvoteCollection.findOneByUserAndFreet(req.session.userId, req.params.freetId);
-  if (!upvote) {
-    res.status(400).json({
-      error: 'You have not yet upvoted this Freet.'
-    });
-    return;
-  }
-
-  next();
-}
-
 export {
-  isUpvotedByUser,
-  isNotUpvotedByUser,
+  isInvalidQuery
 };
