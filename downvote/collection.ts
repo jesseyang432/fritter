@@ -1,6 +1,7 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {Downvote} from './model';
 import DownvoteModel from './model';
+import UpvoteCollection from '../upvote/collection';
 
 /**
  * This files contains a class that has the functionality to explore downvote
@@ -9,13 +10,15 @@ import DownvoteModel from './model';
  */
 class DownvoteCollection {
   /**
-   * Add an upvote to the collection
+   * Add an upvote to the collection (removing potential downvote on same freet)
    *
    * @param {string} downvoterId - The id of the user upvoting
    * @param {string} freetId - The id of the freet
    * @return {Promise<HydratedDocument<Downvote>>} - The newly created upvote
    */
   static async addOne(downvoterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<HydratedDocument<Downvote>> {
+    await UpvoteCollection.deleteOne(downvoterId, freetId);
+    
     const downvote = new DownvoteModel({
       downvoter: downvoterId,
       freet: freetId
