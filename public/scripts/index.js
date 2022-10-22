@@ -49,7 +49,8 @@ const formsAndHandlers = {
   'view-upvotes-by-freet': viewUpvotesByFreet,
   'add-downvote': addDownvote,
   'remove-downvote': removeDownvote,
-  'view-downvotes-by-freet': viewDownvotesByFreet
+  'view-downvotes-by-freet': viewDownvotesByFreet,
+  'view-reputation': viewReputation,
 };
 
 // Attach handlers to forms
