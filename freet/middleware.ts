@@ -22,9 +22,13 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 /**
- * Checks if a freet is responding to a valid parent (req.body.parentId must exist and must be within the specified community)
+ * Checks if a freet is responding to a valid parent (req.body.parentId must exist or be empty and must be within the specified community)
  */
 const isRespondingToValidParent = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.body.parentId === '') {
+    next();
+    return;
+  }
   const validFormat = Types.ObjectId.isValid(req.body.parentId);
   const parentFreet = validFormat ? await FreetCollection.findOne(req.body.parentId) : '';
   if (!parentFreet) {

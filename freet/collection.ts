@@ -3,6 +3,7 @@ import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
 import CommunityCollection from '../community/collection';
+import SafetyCollection from '../safety/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -18,11 +19,12 @@ class FreetCollection {
    *
    * @param {string} authorId - The id of the author of the freet
    * @param {string} content - The id of the content of the freet
-   * @param {string} community - Name of community freet will be posted in (empty string if none)
+   * @param {string} communityName - Name of community freet will be posted in (empty string if none)
    * @param {string} parentId - The id of the potential parent freet
+   * @param {string} safetyLevel - The level of safety of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  static async addOne(authorId: Types.ObjectId | string, content: string, communityName: string, parentId: Types.ObjectId | string, safetyLevel: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const community = await CommunityCollection.findOneByName(communityName);
     let freet;
@@ -64,6 +66,7 @@ class FreetCollection {
       }
     }
     await freet.save(); // Saves freet to MongoDB
+    await SafetyCollection.addOne(freet._id, safetyLevel);
     return freet.populate('authorId community');
   }
 

@@ -83,6 +83,7 @@ router.get(
  * @param {string} content - The content of the freet
  * @param {string} community - The name of the community to post in
  * @param {string} parentId - The parent freet that this one might reply to
+ * @param {string} safetyLevel - The level of safety of the freet
  * @return {FreetResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {404} - If the community is not a recognized name of any community
@@ -102,7 +103,7 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId);
+    const freet = await FreetCollection.addOne(userId, req.body.content, req.body.community, req.body.parentId, req.body.safetyLevel);
 
     res.status(201).json({
       message: 'Your freet was created successfully.',
