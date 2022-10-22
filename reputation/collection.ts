@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Reputation} from './model';
 import ReputationModel from './model';
 import UserCollection from '../user/collection';
+import FreetCollection from '../freet/collection';
 import CommunityCollection from '../community/collection';
 
 /**
@@ -31,7 +32,7 @@ class ReputationCollection {
    * @param userId - The ID of the user
    * @return {Promise<HydratedDocument<Reputation>>}
    */
-   static async findOneByIds(communityId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Reputation>> {
+  static async findOneByIds(communityId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Reputation>> {
     await ReputationCollection.addOne(communityId, userId);
     return ReputationModel.findOne({user: userId, community: communityId}).populate('user community');
   }
@@ -41,9 +42,9 @@ class ReputationCollection {
    * 
    * @param communityId - The ID of the community
    * @param userId - The ID of the user
-   * @return {Promise<HydratedDocument<Reputation>>}
+   * @return {Promise<void>}
    */
-   static async addOne(communityId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<void> {
+  static async addOne(communityId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<void> {
     const currentReputation = await ReputationModel.findOne({user: userId, community: communityId});
     if (!currentReputation) {
       const reputation = new ReputationModel({
@@ -55,6 +56,26 @@ class ReputationCollection {
       await reputation.save();
     }
   }
+
+  /**
+   * Attempt to increase reputation of creator/community of given freet by specified delta
+   * 
+   * @param freetId - The ID of the freet being affected
+   * @param delta - The change to the reputation value
+   * @return {Promise<void>}
+   */
+  static async updateByDelta(freetId: Types.ObjectId | string, delta: number): Promise<void> {
+    const freet = await FreetCollection.findOne(freetId);
+    const authorId = freet.authorId;
+    const communityId = freet.community;
+    if (communityId) {
+      const reputation = await ReputationCollection.findOneByIds(communityId, authorId);
+      reputation.reputation = (reputation.reputation as number) + delta;
+      await reputation.save();
+    }
+  }
+
+
 }
 
 export default ReputationCollection;

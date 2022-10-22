@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Downvote} from './model';
 import DownvoteModel from './model';
 import UpvoteCollection from '../upvote/collection';
+import ReputationCollection from '../reputation/collection';
 
 /**
  * This files contains a class that has the functionality to explore downvote
@@ -23,6 +24,9 @@ class DownvoteCollection {
       downvoter: downvoterId,
       freet: freetId
     });
+
+    // Synchronously try to update reputation
+    await ReputationCollection.updateByDelta(freetId, -1);
  
     await downvote.save(); // Saves upvote to MongoDB
     return downvote.populate('downvoter');
@@ -57,7 +61,12 @@ class DownvoteCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(downvoterId: Types.ObjectId | string, freetId: Types.ObjectId | string): Promise<boolean> {
+    const exists = await DownvoteModel.findOne({downvoter: downvoterId, freet: freetId})
     const downvote = await DownvoteModel.deleteOne({downvoter: downvoterId, freet: freetId});
+    if (exists && downvote !== null) {
+      // Synchronously try to update reputation
+      await ReputationCollection.updateByDelta(freetId, 1);
+    }
     return downvote !== null;
   }
 }
