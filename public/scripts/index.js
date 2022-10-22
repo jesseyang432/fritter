@@ -46,7 +46,10 @@ const formsAndHandlers = {
   'delete-freet': deleteFreet,
   'add-upvote': addUpvote,
   'remove-upvote': removeUpvote,
-  'view-upvotes-by-freet': viewUpvotesByFreet
+  'view-upvotes-by-freet': viewUpvotesByFreet,
+  'add-downvote': addDownvote,
+  'remove-downvote': removeDownvote,
+  'view-downvotes-by-freet': viewDownvotesByFreet
 };
 
 // Attach handlers to forms
