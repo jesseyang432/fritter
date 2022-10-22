@@ -4,9 +4,9 @@ import UserCollection from '../user/collection';
 import CommunityCollection from '../community/collection';
 
 /**
- * Checks if a req.query.community is not valid community name or req.query.username is not valid username
+ * Checks that req.query.community is valid community name and req.query.username is valid username
  */
-const isInvalidQuery = async (req: Request, res: Response, next: NextFunction) => {
+const isValidQuery = async (req: Request, res: Response, next: NextFunction) => {
   const community = await CommunityCollection.findOneByName(req.query.community as string);
   const user = await UserCollection.findOneByUsername(req.query.username as string);
   if (!community) {
@@ -24,5 +24,5 @@ const isInvalidQuery = async (req: Request, res: Response, next: NextFunction) =
   next();
 }
 export {
-  isInvalidQuery
+  isValidQuery
 };

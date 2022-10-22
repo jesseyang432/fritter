@@ -66,7 +66,7 @@ router.get(
   [
     userValidator.isUserLoggedIn,
     communityValidator.isCommunityExistsByName,
-    communityValidator.isUserNotInCommunityByName
+    communityValidator.isUserInCommunityByName
   ],
   async (req: Request, res: Response) => {
     const communityFreets = await FreetCollection.findAllByCommunityName(req.params.communityName);

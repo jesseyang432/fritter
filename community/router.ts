@@ -66,7 +66,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     communityValidator.isCommunityExists,
-    communityValidator.isUserInCommunity,
+    communityValidator.isUserNotInCommunity,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -93,7 +93,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     communityValidator.isCommunityExists,
-    communityValidator.isUserNotInCommunity,
+    communityValidator.isUserInCommunity,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

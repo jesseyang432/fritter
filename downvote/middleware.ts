@@ -3,9 +3,9 @@ import {Types} from 'mongoose';
 import DownvoteCollection from '../downvote/collection';
 
 /**
- * Checks if a freet with id freetId in req.params has already been downvoted by the user
+ * Checks if a freet with id freetId in req.params has not been downvoted by the user
  */
-const isDownvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
+const isNotDownvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
   const downvote = await DownvoteCollection.findOneByUserAndFreet(req.session.userId, req.params.freetId);
   if (downvote) {
     res.status(400).json({
@@ -18,9 +18,9 @@ const isDownvotedByUser = async (req: Request, res: Response, next: NextFunction
 }
 
 /**
- * Checks if a freet with id freetId in req.params has not been downvoted by the user
+ * Checks if a freet with id freetId in req.params has already been downvoted by the user
  */
- const isNotDownvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
+ const isDownvotedByUser = async (req: Request, res: Response, next: NextFunction) => {
   const downvote = await DownvoteCollection.findOneByUserAndFreet(req.session.userId, req.params.freetId);
   if (!downvote) {
     res.status(400).json({

@@ -57,7 +57,7 @@ import CommunityCollection from '../community/collection';
 /**
  * Checks if the current user is not in the community whose communityName is in req.params
  */
- const isUserNotInCommunityByName = async (req: Request, res: Response, next: NextFunction) => {
+ const isUserInCommunityByName = async (req: Request, res: Response, next: NextFunction) => {
   const community = await CommunityCollection.findOneByName(req.params.communityName);
   const userId = req.session.userId;
   if (!community.members.some((member) => (member._id.toString() === userId))) {
@@ -71,9 +71,9 @@ import CommunityCollection from '../community/collection';
 }; 
 
 /**
- * Checks if the current user is in the community whose communityId is in req.params
+ * Checks if the current user is not in the community whose communityId is in req.params
  */
-const isUserInCommunity = async (req: Request, res: Response, next: NextFunction) => {
+const isUserNotInCommunity = async (req: Request, res: Response, next: NextFunction) => {
   const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
   const userId = req.session.userId;
   if (community.members.some((member) => (member._id.toString() === userId))) {
@@ -89,7 +89,7 @@ const isUserInCommunity = async (req: Request, res: Response, next: NextFunction
 /**
  * Checks if the current user is not in the community whose communityId is in req.params
  */
- const isUserNotInCommunity = async (req: Request, res: Response, next: NextFunction) => {
+ const isUserInCommunity = async (req: Request, res: Response, next: NextFunction) => {
   const community = await CommunityCollection.findOneByCommunityId(req.params.communityId);
   const userId = req.session.userId;
   if (!community.members.some((member) => (member._id.toString() === userId))) {
@@ -129,7 +129,7 @@ export {
   isNameNotAlreadyInUse,
   isCommunityExists,
   isCommunityExistsByName,
-  isUserNotInCommunityByName,
+  isUserInCommunityByName,
   isUserInCommunity,
   isUserNotInCommunity,
   isUserPostingWronglyCommunity

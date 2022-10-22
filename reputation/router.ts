@@ -18,7 +18,7 @@ const router = express.Router();
  router.get(
   '/',
   [
-    reputationValidator.isInvalidQuery
+    reputationValidator.isValidQuery
   ],
   async (req: Request, res: Response) => {
     const reputation = await ReputationCollection.findOneByNames(req.query.community as string, req.query.username as string);

@@ -25,7 +25,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    upvoteValidator.isUpvotedByUser
+    upvoteValidator.isNotUpvotedByUser
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -54,7 +54,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    upvoteValidator.isNotUpvotedByUser,
+    upvoteValidator.isUpvotedByUser,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

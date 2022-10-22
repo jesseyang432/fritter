@@ -25,7 +25,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    downvoteValidator.isDownvotedByUser
+    downvoteValidator.isNotDownvotedByUser
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -54,7 +54,7 @@ router.post(
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    downvoteValidator.isNotDownvotedByUser,
+    downvoteValidator.isDownvotedByUser,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
