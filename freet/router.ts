@@ -62,7 +62,7 @@ router.get(
  *
  */
 router.get(
-  '/community/:communityName',
+  '/community/:communityName?',
   [
     userValidator.isUserLoggedIn,
     communityValidator.isCommunityExistsByName,
