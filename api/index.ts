@@ -15,6 +15,7 @@ import {communityRouter} from '../community/router';
 import {upvoteRouter} from '../upvote/router';
 import {downvoteRouter} from '../downvote/router';
 import {reputationRouter} from '../reputation/router';
+import {safetyRouter} from '../safety/router';
 
 // Load environmental variables
 dotenv.config({});
@@ -84,6 +85,7 @@ app.use('/api/freets', freetRouter);
 app.use('/api/upvotes', upvoteRouter);
 app.use('/api/downvotes', downvoteRouter);
 app.use('/api/reputation', reputationRouter);
+app.use('/api/safety', safetyRouter);
 
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {

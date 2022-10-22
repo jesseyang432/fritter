@@ -51,6 +51,7 @@ const formsAndHandlers = {
   'remove-downvote': removeDownvote,
   'view-downvotes-by-freet': viewDownvotesByFreet,
   'view-reputation': viewReputation,
+  'view-safety': viewSafety,
 };
 
 // Attach handlers to forms

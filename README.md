@@ -197,7 +197,6 @@ This renders the `index.html` file that will be used to interact with the backen
 - `409` if `parent` is not a Freet within community `community`
 - `400` If the freet content is empty or a stream of empty spaces
 - `413` If the freet content is more than 140 characters long
-- `400` If `parent` has safety level SFW and `safety` isn't
 
 #### `DELETE /api/freets/:freetId?` - Delete an existing freet (and all replies)
 
